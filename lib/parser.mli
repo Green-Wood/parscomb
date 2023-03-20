@@ -21,8 +21,8 @@ val ( <&> ) : 'a parser -> 'b parser -> ('a * 'b) parser
 val map : 'a parser -> f:('a -> 'b) -> 'b parser
 val ( >>| ) : 'a parser -> ('a -> 'b) -> 'b parser
 val satisfy : f:(char -> bool) -> char parser
-val ( >> ) : 'a parser -> 'b parser -> 'b parser
-val ( << ) : 'a parser -> 'b parser -> 'a parser
+val ( *> ) : 'a parser -> 'b parser -> 'b parser
+val ( <* ) : 'a parser -> 'b parser -> 'a parser
 val between : 'a parser -> 'b parser -> 'c parser -> 'c parser
 val opt : 'a parser -> default:'a -> 'a parser
 val optional : 'a parser -> unit parser

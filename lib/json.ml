@@ -12,11 +12,11 @@ type t =
 [@@deriving sexp, compare, quickcheck]
 
 let token s = lexeme (str s)
-let null_parser = token "null" >> success Null
+let null_parser = token "null" *> success Null
 
 let bool_parser =
-  token "false" >> success (Boolean false)
-  <|> (token "true" >> success (Boolean true))
+  token "false" *> success (Boolean false)
+  <|> token "true" *> success (Boolean true)
 
 let num_parser = lexeme number >>| fun s -> Number (Float.of_string s)
 
@@ -52,7 +52,7 @@ and obj_parser loc =
   let core_obj = between (token "{") (token "}") inner_obj in
   (lexeme core_obj) loc
 
-let json_parser = json_value << eof
+let json_parser = json_value <* eof
 
 let to_json_string ?(indent = 4) t =
   let rec aux n_indents = function

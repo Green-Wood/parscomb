@@ -66,18 +66,18 @@ let satisfy ~f =
   if f c then success c
   else fail (Printf.sprintf "Char %c isn't satisfiy function" c)
 
-let ( >> ) p1 p2 =
+let ( *> ) p1 p2 =
   let* _ = p1 in
   p2
 
-let ( << ) p1 p2 =
+let ( <* ) p1 p2 =
   let* r = p1 in
   let* _ = p2 in
   success r
 
-let between op ed x = op >> x << ed
+let between op ed x = op *> x <* ed
 let opt p ~default = p <|> success default
-let optional p = opt ~default:() (p >> success ())
+let optional p = opt ~default:() (p *> success ())
 
 let rec many p =
   opt ~default:[]
@@ -92,7 +92,7 @@ let many1 p =
 
 let sep_by1 p ~sep =
   let* r = p in
-  let* rs = many (sep >> p) in
+  let* rs = many (sep *> p) in
   success (r :: rs)
 
 let sep_by p ~sep = opt ~default:[] (sep_by1 ~sep p)

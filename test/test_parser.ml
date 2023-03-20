@@ -84,11 +84,11 @@ let%test_unit "sep" =
   eq_fn (run parser "hi,hi,hi") (Ok [ "hi"; "hi"; "hi" ])
 
 let%test_unit "right" =
-  let parser = str "a" >> str "b" in
+  let parser = str "a" *> str "b" in
   str_eq (run parser "ab") (Ok "b")
 
 let%test_unit "left" =
-  let parser = str "a" << str "b" in
+  let parser = str "a" <* str "b" in
   str_eq (run parser "ab") (Ok "a")
 
 let%test_unit "between" =
