@@ -1,0 +1,4 @@
+(executable
+ (public_name parscomb)
+ (name main)
+ (libraries parscomb base stdio))
