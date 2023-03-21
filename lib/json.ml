@@ -34,9 +34,8 @@ let str_parser = str_value >>| fun s -> String s
 let json_value =
   fix ~f:(fun json ->
       let array_parser =
-        let inner_array = sep_by ~sep:(str ",") json >>| fun ls -> Array ls in
-        let core_array = between (token "[") (token "]") inner_array in
-        lexeme core_array
+        token "[" *> sep_by ~sep:(str ",") json <* token "]" >>| fun ls ->
+        Array ls
       in
       let obj_parser =
         let kv =
@@ -45,9 +44,8 @@ let json_value =
           let* value = json in
           success (key, value)
         in
-        let inner_obj = sep_by ~sep:(str ",") kv >>| fun ls -> Object ls in
-        let core_obj = between (token "{") (token "}") inner_obj in
-        lexeme core_obj
+        token "{" *> sep_by ~sep:(str ",") kv <* token "}" >>| fun ls ->
+        Object ls
       in
       null_parser <|> bool_parser <|> num_parser <|> str_parser <|> array_parser
       <|> obj_parser)
