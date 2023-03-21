@@ -25,7 +25,7 @@ let slice p loc =
   let%bind _, loc' = p loc in
   success (Loc.slice ~before:loc ~after:loc') loc'
 
-let choice p1 p2 loc =
+let ( <|> ) p1 p2 loc =
   match p1 loc with Error _ -> p2 loc | Ok _ as ret -> ret
 
 let any loc =
@@ -51,7 +51,6 @@ let fix ~f =
 (* operators *)
 let ( >>= ) p f = bind p ~f
 let ( let* ) = ( >>= )
-let ( <|> ) = choice
 
 let ( <&> ) p1 p2 =
   let* r1 = p1 in
@@ -80,6 +79,7 @@ let ( <* ) p1 p2 =
   success r
 
 let between op ed x = op *> x <* ed
+let choice ps = List.fold ~init:(fail "") ~f:( <|> ) ps
 let opt p ~default = p <|> success default
 let optional p = opt ~default:() (p *> success ())
 

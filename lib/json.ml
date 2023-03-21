@@ -47,8 +47,15 @@ let json_value =
         token "{" *> sep_by ~sep:(str ",") kv <* token "}" >>| fun ls ->
         Object ls
       in
-      null_parser <|> bool_parser <|> num_parser <|> str_parser <|> array_parser
-      <|> obj_parser)
+      choice
+        [
+          null_parser;
+          bool_parser;
+          num_parser;
+          str_parser;
+          array_parser;
+          obj_parser;
+        ])
 
 let json_parser = json_value <* eof
 

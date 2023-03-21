@@ -7,7 +7,7 @@ val bind : 'a parser -> f:('a -> 'b parser) -> 'b parser
 val success : 'a -> 'a parser
 val fail : string -> 'a parser
 val slice : 'a parser -> string parser
-val choice : 'a parser -> 'a parser -> 'a parser
+val ( <|> ) : 'a parser -> 'a parser -> 'a parser
 val any : char parser
 val eof : unit parser
 val fix : f:('a parser -> 'a parser) -> 'a parser
@@ -15,7 +15,6 @@ val fix : f:('a parser -> 'a parser) -> 'a parser
 (* operators *)
 val ( >>= ) : 'a parser -> ('a -> 'b parser) -> 'b parser
 val ( let* ) : 'a parser -> ('a -> 'b parser) -> 'b parser
-val ( <|> ) : 'a parser -> 'a parser -> 'a parser
 val ( <&> ) : 'a parser -> 'b parser -> ('a * 'b) parser
 
 (* derived operations *)
@@ -25,6 +24,7 @@ val satisfy : f:(char -> bool) -> char parser
 val ( *> ) : 'a parser -> 'b parser -> 'b parser
 val ( <* ) : 'a parser -> 'b parser -> 'a parser
 val between : 'a parser -> 'b parser -> 'c parser -> 'c parser
+val choice : 'a parser list -> 'a parser
 val opt : 'a parser -> default:'a -> 'a parser
 val optional : 'a parser -> unit parser
 val many : 'a parser -> 'a list parser
