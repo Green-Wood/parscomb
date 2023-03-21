@@ -1,0 +1,45 @@
+{
+    "movieDatabase": [
+        {
+            "title": "Inception",
+            "director": "Christopher Nolan",
+            "releaseYear": 2010,
+            "genres": [
+                "Action",
+                "Adventure",
+                "Sci-Fi"
+            ],
+            "cast": [
+                {
+                    "name": "Leonardo DiCaprio",
+                    "character": "Cobb"
+                },
+                {
+                    "name": "Joseph Gordon-Levitt",
+                    "character": "Arthur"
+                }
+            ],
+            "rating": 8.8
+        },
+        {
+            "title": "The Matrix",
+            "director": "Lana Wachowski, Lilly Wachowski",
+            "releaseYear": 1999,
+            "genres": [
+                "Action",
+                "Sci-Fi"
+            ],
+            "cast": [
+                {
+                    "name": "Keanu Reeves",
+                    "character": "Neo"
+                },
+                {
+                    "name": "Laurence Fishburne",
+                    "character": "Morpheus"
+                }
+            ],
+            "rating": 8.7
+        }
+    ]
+}

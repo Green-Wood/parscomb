@@ -1,0 +1,39 @@
+{
+    "weatherData": {
+        "location": {
+            "city": "San Francisco",
+            "state": "California",
+            "country": "USA",
+            "coordinates": {
+                "latitude": 37.7749,
+                "longitude": -122.4194
+            }
+        },
+        "current": {
+            "temperature": 62,
+            "humidity": 76,
+            "pressure": 1013,
+            "windSpeed": 10,
+            "windDirection": 270,
+            "condition": "Clear"
+        },
+        "forecast": [
+            {
+                "date": "2023-03-22",
+                "temperature": {
+                    "min": 53,
+                    "max": 68
+                },
+                "condition": "Partly Cloudy"
+            },
+            {
+                "date": "2023-03-23",
+                "temperature": {
+                    "min": 52,
+                    "max": 70
+                },
+                "condition": "Sunny"
+            }
+        ]
+    }
+}

@@ -1,20 +1,16 @@
 open Parscomb
 open Core_bench
+open Core
 
-let js_str =
-  {|{
-    "name": "greenwood",
-  "age" : 18,
-  "male":true,
-  "degrees": [
-        "Bachelor",
-    "Master",
-      "No PhD"
-  ]
-}|}
+let json_folder = "./benchmark/json"
 
-let t1 =
-  Bench.Test.create ~name:"bench json parse" (fun () ->
-      Parser.run Json.json_parser js_str)
+let build_json_test filename =
+  let content = Stdio.In_channel.read_all filename in
+  Bench.Test.create ~name:filename (fun () ->
+      Parser.run Json.json_parser content)
 
-let () = [ t1 ] |> Bench.make_command |> Command_unix.run
+let () =
+  Sys_unix.ls_dir json_folder
+  |> List.map ~f:(fun fname ->
+         build_json_test (Filename.concat json_folder fname))
+  |> Bench.make_command |> Command_unix.run

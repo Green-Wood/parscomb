@@ -1,0 +1,45 @@
+{
+  "companyHierarchy": {
+    "name": "TechCorp",
+    "ceo": {
+      "name": "Alice Johnson",
+      "title": "CEO",
+      "departments": [
+        {
+          "name": "Engineering",
+          "manager": {
+            "name": "Bob Smith",
+            "title": "Director of Engineering",
+            "teams": [
+              {
+                "name": "Backend",
+                "lead": "Carol Wilson"
+              },
+              {
+                "name": "Frontend",
+                "lead": "David Taylor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "Marketing",
+          "manager": {
+            "name": "Eva Brown",
+            "title": "Director of Marketing",
+            "teams": [
+              {
+                "name": "Content",
+                "lead": "Frank Martinez"
+              },
+              {
+                "name": "Social Media",
+                "lead": "Grace Lee"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
