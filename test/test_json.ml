@@ -32,7 +32,7 @@ let%test_unit "number" =
   eq_json " 3.1415926 " (Ok (Number 3.1415926));
   fail_json "3.E"
 
-let check_str_leagal s =
+let str_leagal s =
   let res =
     String.fold_result s ~init:false ~f:(fun is_backslash c ->
         let open Char in
@@ -44,7 +44,7 @@ let%test_unit "string" =
   Quickcheck.test ~sexp_of:[%sexp_of: string] String.quickcheck_generator
     ~f:(fun s ->
       let quote_s = "\"" ^ s ^ "\"" in
-      if check_str_leagal s then eq_json quote_s (Ok (String s))
+      if str_leagal s then eq_json quote_s (Ok (String s))
       else fail_json quote_s);
   eq_json {|"2ES8\"\000"|} (Ok (String {|2ES8\"\000|}));
   eq_json {|"\""|} (Ok (String {|\"|}));
@@ -137,10 +137,9 @@ let%test_unit "json quicktest" =
     | Null -> true
     | Boolean _ -> true
     | Number n -> Float.is_finite n
-    | String s -> check_str_leagal s
+    | String s -> str_leagal s
     | Array arr -> List.for_all arr ~f:leagal
-    | Object obj ->
-        List.for_all obj ~f:(fun (s, t) -> check_str_leagal s && leagal t)
+    | Object obj -> List.for_all obj ~f:(fun (s, t) -> str_leagal s && leagal t)
   in
   Quickcheck.test ~sexp_of:[%sexp_of: t] [%quickcheck.generator: t] ~f:(fun t ->
       let s = to_json_string t in
