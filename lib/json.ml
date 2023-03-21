@@ -31,26 +31,26 @@ let str_value =
 
 let str_parser = str_value >>| fun s -> String s
 
-let rec json_value loc =
-  (null_parser <|> bool_parser <|> num_parser <|> str_parser <|> array_parser
- <|> obj_parser)
-    loc
-
-and array_parser loc =
-  let inner_array = sep_by ~sep:(str ",") json_value >>| fun ls -> Array ls in
-  let core_array = between (token "[") (token "]") inner_array in
-  (lexeme core_array) loc
-
-and obj_parser loc =
-  let kv =
-    let* key = str_value in
-    let* _ = str ":" in
-    let* value = json_value in
-    success (key, value)
-  in
-  let inner_obj = sep_by ~sep:(str ",") kv >>| fun ls -> Object ls in
-  let core_obj = between (token "{") (token "}") inner_obj in
-  (lexeme core_obj) loc
+let json_value =
+  fix ~f:(fun json ->
+      let array_parser =
+        let inner_array = sep_by ~sep:(str ",") json >>| fun ls -> Array ls in
+        let core_array = between (token "[") (token "]") inner_array in
+        lexeme core_array
+      in
+      let obj_parser =
+        let kv =
+          let* key = str_value in
+          let* _ = str ":" in
+          let* value = json in
+          success (key, value)
+        in
+        let inner_obj = sep_by ~sep:(str ",") kv >>| fun ls -> Object ls in
+        let core_obj = between (token "{") (token "}") inner_obj in
+        lexeme core_obj
+      in
+      null_parser <|> bool_parser <|> num_parser <|> str_parser <|> array_parser
+      <|> obj_parser)
 
 let json_parser = json_value <* eof
 

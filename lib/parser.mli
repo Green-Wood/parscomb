@@ -1,5 +1,5 @@
 type parser_err = { msg : string } [@@deriving sexp, compare]
-type 'a parser = Loc.t -> ('a * Loc.t, parser_err) Result.t
+type 'a parser
 
 (* atomic operations *)
 val str : string -> string parser
@@ -10,6 +10,7 @@ val slice : 'a parser -> string parser
 val choice : 'a parser -> 'a parser -> 'a parser
 val any : char parser
 val eof : unit parser
+val fix : f:('a parser -> 'a parser) -> 'a parser
 
 (* operators *)
 val ( >>= ) : 'a parser -> ('a -> 'b parser) -> 'b parser
