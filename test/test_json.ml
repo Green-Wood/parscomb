@@ -6,8 +6,7 @@ let eq_json str js =
     (Parser.run Json.json_parser str)
     js
 
-let fail_json str =
-  [%test_eq: bool] (Result.is_error (Parser.run Json.json_parser str)) true
+let fail_json str = assert (Result.is_error (Parser.run Json.json_parser str))
 
 open Json
 
