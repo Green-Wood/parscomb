@@ -45,8 +45,8 @@ let eof loc =
   | Error _ -> Ok ((), loc)
 
 let fix ~f =
-  let rec p = lazy (f r) and r loc = (Lazy.force p) loc in
-  r
+  let rec p loc = (f p) loc in
+  p
 
 (* operators *)
 let ( >>= ) p f = bind p ~f
