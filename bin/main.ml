@@ -14,5 +14,6 @@ let js_str =
 }|}
 
 let () =
-  Parser.run Json.json_parser js_str
-  |> Result.get_ok |> Json.to_json_string |> print_endline
+  match Parser.run Json.json_parser js_str with
+  | Ok t -> t |> Json.to_json_string |> print_endline
+  | Error e -> e.msg |> print_endline
