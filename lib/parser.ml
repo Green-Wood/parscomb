@@ -1,6 +1,9 @@
 open Base
 
-type parser_err = { msg : string } [@@deriving sexp, compare]
+type parser_err = { msg : string; loc : Loc.t }
+
+let err_msg { msg; loc } = Printf.sprintf "%s\n%s" (Loc.err_line loc) msg
+
 type 'a parser = Loc.t -> ('a * Loc.t, parser_err) Result.t
 
 (* atomic operations *)
@@ -10,7 +13,7 @@ let str s loc =
     Ok (s, Loc.advance loc (String.length s))
   else
     let msg = Printf.sprintf "Tried to match %s, but got %s" s remain in
-    Error { msg }
+    Error { msg; loc }
 
 let bind p ~f loc =
   let open Result.Let_syntax in
@@ -18,7 +21,7 @@ let bind p ~f loc =
   f a loc'
 
 let success a loc = Ok (a, loc)
-let fail msg _ = Error { msg }
+let fail msg loc = Error { msg; loc }
 
 let slice p loc =
   let open Result.Let_syntax in
@@ -33,7 +36,7 @@ let any loc =
   if String.length remain > 0 then Ok (String.get remain 0, Loc.advance loc 1)
   else
     let msg = Printf.sprintf "Expect to get any char, but got EOF" in
-    Error { msg }
+    Error { msg; loc }
 
 let eof loc =
   match any loc with
@@ -41,7 +44,7 @@ let eof loc =
       let msg =
         loc |> Loc.remain |> Printf.sprintf "Expect to get EOF, but got %s"
       in
-      Error { msg }
+      Error { msg; loc }
   | Error _ -> Ok ((), loc)
 
 let fix ~f =
@@ -117,4 +120,7 @@ let number =
 let lexeme p = between spaces spaces p
 
 (* run parser with given string *)
-let run par s = s |> Loc.from_str |> par |> Result.map ~f:(fun (res, _) -> res)
+let run par s =
+  match s |> Loc.from_str |> par with
+  | Ok (res, _) -> Ok res
+  | Error e -> Error (err_msg e)

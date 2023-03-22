@@ -1,4 +1,7 @@
-type parser_err = { msg : string } [@@deriving sexp, compare]
+type parser_err
+
+val err_msg : parser_err -> string
+
 type 'a parser
 
 (* atomic operations *)
@@ -41,4 +44,4 @@ val number : string parser
 val lexeme : 'a parser -> 'a parser
 
 (* run parser with given string *)
-val run : 'a parser -> string -> ('a, parser_err) Result.t
+val run : 'a parser -> string -> ('a, string) Result.t

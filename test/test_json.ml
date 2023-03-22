@@ -2,9 +2,7 @@ open Core
 open Parscomb
 
 let eq_json str js =
-  [%test_eq: (Json.t, Parser.parser_err) Result.t]
-    (Parser.run Json.json_parser str)
-    js
+  [%test_eq: (Json.t, string) Result.t] (Parser.run Json.json_parser str) js
 
 let fail_json str = assert (Result.is_error (Parser.run Json.json_parser str))
 
