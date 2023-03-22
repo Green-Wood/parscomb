@@ -1,10 +1,6 @@
 open Base
 
-type parser_err = { msg : string; loc : Loc.t }
-
-let err_msg { msg; loc } = Printf.sprintf "%s\n%s" (Loc.err_line loc) msg
-
-type 'a parser = Loc.t -> ('a * Loc.t, parser_err) Result.t
+type 'a parser = Loc.t -> ('a * Loc.t, Parser_err.t) Result.t
 
 (* atomic operations *)
 let str s loc =
@@ -13,7 +9,7 @@ let str s loc =
     Ok (s, Loc.advance loc (String.length s))
   else
     let msg = Printf.sprintf "Tried to match %s, but got %s" s remain in
-    Error { msg; loc }
+    Error (Parser_err.from msg loc)
 
 let bind p ~f loc =
   let open Result.Let_syntax in
@@ -21,7 +17,7 @@ let bind p ~f loc =
   f a loc'
 
 let success a loc = Ok (a, loc)
-let fail msg loc = Error { msg; loc }
+let fail msg loc = Error (Parser_err.from msg loc)
 
 let slice p loc =
   let open Result.Let_syntax in
@@ -36,7 +32,7 @@ let any loc =
   if String.length remain > 0 then Ok (String.get remain 0, Loc.advance loc 1)
   else
     let msg = Printf.sprintf "Expect to get any char, but got EOF" in
-    Error { msg; loc }
+    Error (Parser_err.from msg loc)
 
 let eof loc =
   match any loc with
@@ -44,7 +40,7 @@ let eof loc =
       let msg =
         loc |> Loc.remain |> Printf.sprintf "Expect to get EOF, but got %s"
       in
-      Error { msg; loc }
+      Error (Parser_err.from msg loc)
   | Error _ -> Ok ((), loc)
 
 let fix ~f =
@@ -123,4 +119,4 @@ let lexeme p = between spaces spaces p
 let run par s =
   match s |> Loc.from_str |> par with
   | Ok (res, _) -> Ok res
-  | Error e -> Error (err_msg e)
+  | Error e -> Error (Parser_err.err_msg e)

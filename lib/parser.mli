@@ -1,7 +1,3 @@
-type parser_err
-
-val err_msg : parser_err -> string
-
 type 'a parser
 
 (* atomic operations *)
