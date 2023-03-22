@@ -1,6 +1,6 @@
 open Base
 
-type 'a parser = Loc.t -> ('a * Loc.t, Parser_err.t) Result.t
+type 'a t = Loc.t -> ('a * Loc.t, Parser_err.t) Result.t
 
 (* atomic operations *)
 let str s loc =

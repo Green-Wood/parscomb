@@ -1,43 +1,43 @@
-type 'a parser
+type 'a t
 
 (* atomic operations *)
-val str : string -> string parser
-val bind : 'a parser -> f:('a -> 'b parser) -> 'b parser
-val success : 'a -> 'a parser
-val fail : string -> 'a parser
-val slice : 'a parser -> string parser
-val ( <|> ) : 'a parser -> 'a parser -> 'a parser
-val any : char parser
-val eof : unit parser
-val fix : f:('a parser -> 'a parser) -> 'a parser
+val str : string -> string t
+val bind : 'a t -> f:('a -> 'b t) -> 'b t
+val success : 'a -> 'a t
+val fail : string -> 'a t
+val slice : 'a t -> string t
+val ( <|> ) : 'a t -> 'a t -> 'a t
+val any : char t
+val eof : unit t
+val fix : f:('a t -> 'a t) -> 'a t
 
 (* operators *)
-val ( >>= ) : 'a parser -> ('a -> 'b parser) -> 'b parser
-val ( let* ) : 'a parser -> ('a -> 'b parser) -> 'b parser
-val ( <&> ) : 'a parser -> 'b parser -> ('a * 'b) parser
+val ( >>= ) : 'a t -> ('a -> 'b t) -> 'b t
+val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t
+val ( <&> ) : 'a t -> 'b t -> ('a * 'b) t
 
 (* derived operations *)
-val map : 'a parser -> f:('a -> 'b) -> 'b parser
-val ( >>| ) : 'a parser -> ('a -> 'b) -> 'b parser
-val satisfy : f:(char -> bool) -> char parser
-val ( *> ) : 'a parser -> 'b parser -> 'b parser
-val ( <* ) : 'a parser -> 'b parser -> 'a parser
-val between : 'a parser -> 'b parser -> 'c parser -> 'c parser
-val choice : 'a parser list -> 'a parser
-val opt : 'a parser -> default:'a -> 'a parser
-val optional : 'a parser -> unit parser
-val many : 'a parser -> 'a list parser
-val many1 : 'a parser -> 'a list parser
-val sep_by1 : 'a parser -> sep:'b parser -> 'a list parser
-val sep_by : 'a parser -> sep:'b parser -> 'a list parser
+val map : 'a t -> f:('a -> 'b) -> 'b t
+val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
+val satisfy : f:(char -> bool) -> char t
+val ( *> ) : 'a t -> 'b t -> 'b t
+val ( <* ) : 'a t -> 'b t -> 'a t
+val between : 'a t -> 'b t -> 'c t -> 'c t
+val choice : 'a t list -> 'a t
+val opt : 'a t -> default:'a -> 'a t
+val optional : 'a t -> unit t
+val many : 'a t -> 'a list t
+val many1 : 'a t -> 'a list t
+val sep_by1 : 'a t -> sep:'b t -> 'a list t
+val sep_by : 'a t -> sep:'b t -> 'a list t
 
 (* useful parsers *)
-val space : char parser
-val spaces : char list parser
-val digit : char parser
-val integer : string parser
-val number : string parser
-val lexeme : 'a parser -> 'a parser
+val space : char t
+val spaces : char list t
+val digit : char t
+val integer : string t
+val number : string t
+val lexeme : 'a t -> 'a t
 
 (* run parser with given string *)
-val run : 'a parser -> string -> ('a, string) Result.t
+val run : 'a t -> string -> ('a, string) Result.t

@@ -1,5 +1,3 @@
-open Parser
-
 type t =
   | Null
   | Boolean of bool
@@ -9,5 +7,5 @@ type t =
   | Object of (string * t) list
 [@@deriving sexp, compare, quickcheck]
 
-val json_parser : t parser
+val json_parser : t Parser.t
 val to_json_string : ?indent:int -> t -> string
