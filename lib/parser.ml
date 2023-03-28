@@ -43,9 +43,7 @@ let eof loc =
       Error (Parser_err.from msg loc)
   | Error _ -> Ok ((), loc)
 
-let fix ~f =
-  let rec p loc = (f p) loc in
-  p
+let rec fix ~f loc = f (fix ~f) loc
 
 (* operators *)
 let ( >>= ) p f = bind p ~f
