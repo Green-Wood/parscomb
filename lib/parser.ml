@@ -98,6 +98,15 @@ let sep_by1 p ~sep =
 
 let sep_by p ~sep = opt ~default:[] (sep_by1 ~sep p)
 
+let chainl1 p op =
+  let rec go acc =
+    opt ~default:acc
+      (let* f = op in
+       let* a = p in
+       go (f acc a))
+  in
+  p >>= go
+
 (* useful parsers *)
 let space = satisfy ~f:Char.is_whitespace
 let spaces = many space

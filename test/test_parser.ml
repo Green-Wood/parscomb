@@ -82,6 +82,15 @@ let%test_unit "sep" =
   eq_fn (run parser "hi,hi") (Ok [ "hi"; "hi" ]);
   eq_fn (run parser "hi,hi,hi") (Ok [ "hi"; "hi"; "hi" ])
 
+let%test_unit "chainl1" =
+  let i = number >>| Int.of_string in
+  let plus = str "+" *> success ( + ) in
+  let parser = chainl1 i plus in
+  let eq_fn = [%test_eq: (int, string) Result.t] in
+  eq_fn (run parser "1") (Ok 1);
+  eq_fn (run parser "1+2+3") (Ok 6);
+  eq_fn (run parser "") (Error "1| \nExpect to get any char, but got EOF")
+
 let%test_unit "right" =
   let parser = str "a" *> str "b" in
   str_eq (run parser "ab") (Ok "b")

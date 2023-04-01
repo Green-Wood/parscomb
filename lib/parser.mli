@@ -87,6 +87,8 @@ val sep_by1 : 'a t -> sep:'b t -> 'a list t
 val sep_by : 'a t -> sep:'b t -> 'a list t
 (** [sep_by p sep] is a parser that applies parser [p] zero or more times, separated by parser [sep], and returns a list of the results of [p]. *)
 
+val chainl1 : 'a t -> ('a -> 'a -> 'a) t -> 'a t
+
 (* Useful parsers *)
 
 val space : char t
