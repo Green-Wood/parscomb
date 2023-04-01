@@ -13,12 +13,64 @@ Parscomb is a lightweight, monadic parser combinator library for OCaml, created 
 Parscomb serves as a practical example of monadic programming, showcasing the power and expressiveness of monads in the context of parser combinators. By studying the source code and examples, you can gain a deeper understanding of monads and how they can be used to model complex control flows and data manipulations in a functional programming language like OCaml.
 
 ## Example
-### JSON Parser
-Please refer to `lib/json.ml` for its implementation. 
 
 ### Arithmetic Calculator
-TODO
+In `bin/main.ml`
+```ocaml
+open Parscomb.Parser
+open Base
+open Stdio
 
+let int_num = integer >>| Int.of_string
+let add = str "+" *> success ( + )
+let minus = str "-" *> success ( - )
+let mul = str "*" *> success ( * )
+let div = str "/" *> success ( / )
+
+let expr =
+  fix ~f:(fun expr ->
+      let factor = int_num <|> (str "(" *> expr <* str ")") in
+      let term = chainl1 factor (mul <|> div) in
+      chainl1 term (add <|> minus))
+  <* eof
+
+let rec main_loop () =
+  printf ">>> ";
+  Out_channel.flush stdout;
+  match In_channel.input_line stdin with
+  | None -> ()
+  | Some s ->
+      (match run expr s with
+      | Error e -> print_endline e
+      | Ok res -> printf "%d\n" res);
+      main_loop ()
+
+let () = main_loop ()
+```
+You can play with this simple calculator:
+```
+>>> 1+2+3
+6
+>>> 1+2-3
+0
+>>> 1-2+3
+2
+>>> 1-(2+3)
+-4
+>>> 1+2*3
+7
+>>> (1+2)*3
+9
+>>> 1-2/3
+1
+>>> (1-2)/3
+0
+>>> -3/3
+-1
+```
+
+### JSON Parser
+Please refer to `lib/json.ml` for its implementation. 
 
 
 ## Acknowledges
