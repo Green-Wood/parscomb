@@ -57,7 +57,7 @@ val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
 val satisfy : f:(char -> bool) -> char t
 (** [satisfy f] is a parser that succeeds if it encounters a character [c] that satisfies the predicate [f c] and returns [c]. *)
 
-val ( > ) : 'a t -> 'b t -> 'b t
+val ( *> ) : 'a t -> 'b t -> 'b t
 (* [p1 *> p2] is a parser that runs parser [p1], discards its result, and then runs parser [p2] andreturns its result. *)
 
 val ( <* ) : 'a t -> 'b t -> 'a t
