@@ -1,4 +1,4 @@
-name: Main workflow
+name: dune test
 
 on:
   - push
