@@ -16,13 +16,12 @@ let bind p ~f loc =
   let%bind a, loc' = p loc in
   f a loc'
 
-let success a loc = Ok (a, loc)
+let return a loc = Ok (a, loc)
 let fail msg loc = Error (Parser_err.from msg loc)
 
 let slice p loc =
-  let open Result.Let_syntax in
-  let%bind _, loc' = p loc in
-  success (Loc.slice ~before:loc ~after:loc') loc'
+  let open Result.Monad_infix in
+  p loc >>= fun (_, loc') -> return (Loc.slice ~before:loc ~after:loc') loc'
 
 let ( <|> ) p1 p2 loc =
   match p1 loc with Error _ -> p2 loc | Ok _ as ret -> ret
@@ -52,18 +51,15 @@ let ( let* ) = ( >>= )
 let ( <&> ) p1 p2 =
   let* r1 = p1 in
   let* r2 = p2 in
-  success (r1, r2)
+  return (r1, r2)
 
 (* derived operations *)
-let map p ~f = bind p ~f:(Fn.compose success f)
+let map p ~f = bind p ~f:(Fn.compose return f)
 let ( >>| ) p f = map p ~f
-
-(* The following implementation will cause stack over flow, because of non-laziness *)
-(* let rec many p = map2 p (many p) ~f:(fun (r, rs) -> r :: rs) <|> success [] *)
 
 let satisfy ~f =
   let* c = any in
-  if f c then success c
+  if f c then return c
   else fail (Printf.sprintf "Char %c isn't satisfiy function" c)
 
 let ( *> ) p1 p2 =
@@ -73,28 +69,28 @@ let ( *> ) p1 p2 =
 let ( <* ) p1 p2 =
   let* r = p1 in
   let* _ = p2 in
-  success r
+  return r
 
 let between op ed x = op *> x <* ed
 let choice ps = List.fold ~init:(fail "") ~f:( <|> ) ps
-let opt p ~default = p <|> success default
-let optional p = opt ~default:() (p *> success ())
+let opt p ~default = p <|> return default
+let optional p = opt ~default:() (p *> return ())
 
 let rec many p =
   opt ~default:[]
     (let* r = p in
      let* rs = many p in
-     success (r :: rs))
+     return (r :: rs))
 
 let many1 p =
   let* r = p in
   let* rs = many p in
-  success (r :: rs)
+  return (r :: rs)
 
 let sep_by1 p ~sep =
   let* r = p in
   let* rs = many (sep *> p) in
-  success (r :: rs)
+  return (r :: rs)
 
 let sep_by p ~sep = opt ~default:[] (sep_by1 ~sep p)
 

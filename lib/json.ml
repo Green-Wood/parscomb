@@ -12,11 +12,11 @@ type t =
 [@@deriving sexp, compare, quickcheck]
 
 let token s = lexeme (str s)
-let null_parser = token "null" *> success Null
+let null_parser = token "null" *> return Null
 
 let bool_parser =
-  token "false" *> success (Boolean false)
-  <|> token "true" *> success (Boolean true)
+  token "false" *> return (Boolean false)
+  <|> token "true" *> return (Boolean true)
 
 let num_parser = lexeme number >>| fun s -> Number (Float.of_string s)
 
@@ -42,7 +42,7 @@ let json_value =
           let* key = str_value in
           let* _ = str ":" in
           let* value = json in
-          success (key, value)
+          return (key, value)
         in
         token "{" *> sep_by ~sep:(str ",") kv <* token "}" >>| fun ls ->
         Object ls

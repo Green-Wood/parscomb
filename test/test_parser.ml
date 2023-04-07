@@ -16,7 +16,7 @@ let%test_unit "bind" =
   let parser =
     let* s1 = str "hello" in
     let* s2 = str "world" in
-    success (s1 ^ s2)
+    return (s1 ^ s2)
   in
   str_eq (run parser "helloworld") (Ok "helloworld")
 
@@ -84,7 +84,7 @@ let%test_unit "sep" =
 
 let%test_unit "chainl1" =
   let i = number >>| Int.of_string in
-  let plus = str "+" *> success ( + ) in
+  let plus = str "+" *> return ( + ) in
   let parser = chainl1 i plus in
   let eq_fn = [%test_eq: (int, string) Result.t] in
   eq_fn (run parser "1") (Ok 1);

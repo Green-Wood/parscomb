@@ -14,8 +14,8 @@ val str : string -> string t
 val bind : 'a t -> f:('a -> 'b t) -> 'b t
 (* [bind p f] is a parser that runs parser [p], and if it succeeds, applies function [f] to the result and continues with the parser returned by [f]. *)
 
-val success : 'a -> 'a t
-(* [success x] is a parser that always succeeds and returns the value [x]. *)
+val return : 'a -> 'a t
+(* [return x] is a parser that always succeeds and returns the value [x]. *)
 
 val fail : string -> 'a t
 (* [fail msg] is a parser that always fails with the error message [msg]. *)

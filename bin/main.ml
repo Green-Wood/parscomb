@@ -3,10 +3,10 @@ open Base
 open Stdio
 
 let int_num = integer >>| Int.of_string
-let add = str "+" *> success ( + )
-let minus = str "-" *> success ( - )
-let mul = str "*" *> success ( * )
-let div = str "/" *> success ( / )
+let add = str "+" *> return ( + )
+let minus = str "-" *> return ( - )
+let mul = str "*" *> return ( * )
+let div = str "/" *> return ( / )
 
 let expr =
   fix ~f:(fun expr ->
