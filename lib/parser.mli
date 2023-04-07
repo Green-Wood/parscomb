@@ -3,19 +3,18 @@
    The module also includes a set of useful parsers for common parsing tasks.
 *)
 
+open Base
+
 type 'a t
 (* The type of a parser which parses a value of type ['a]. *)
+
+include Monad.S with type 'a t := 'a t
+(* Monadic Interface *)
 
 (* Atomic operations *)
 
 val str : string -> string t
 (* [str s] is a parser that succeeds if it encounters the string [s] and returns [s]. *)
-
-val bind : 'a t -> f:('a -> 'b t) -> 'b t
-(* [bind p f] is a parser that runs parser [p], and if it succeeds, applies function [f] to the result and continues with the parser returned by [f]. *)
-
-val return : 'a -> 'a t
-(* [return x] is a parser that always succeeds and returns the value [x]. *)
 
 val fail : string -> 'a t
 (* [fail msg] is a parser that always fails with the error message [msg]. *)
@@ -37,9 +36,6 @@ val fix : f:('a t -> 'a t) -> 'a t
 
 (* Operators *)
 
-val ( >>= ) : 'a t -> ('a -> 'b t) -> 'b t
-(* [p >>= f] is an alias for [bind p f]. *)
-
 val ( let* ) : 'a t -> ('a -> 'b t) -> 'b t
 (* [let* p f] is an alias for [bind p f], which can be used with the [let*] syntax. *)
 
@@ -47,12 +43,6 @@ val ( <&> ) : 'a t -> 'b t -> ('a * 'b) t
 (* [p1 <&> p2] is a parser that runs parser [p1] and then parser [p2] sequentially, and returns their results as a tuple [(x, y)] where [x] is the result of [p1] and [y] is the result of [p2]. *)
 
 (* Derived operations *)
-
-val map : 'a t -> f:('a -> 'b) -> 'b t
-(* [map p f] is a parser that runs parser [p] and applies function [f] to its result. *)
-
-val ( >>| ) : 'a t -> ('a -> 'b) -> 'b t
-(* [p >>| f] is an alias for [map p f]. *)
 
 val satisfy : f:(char -> bool) -> char t
 (* [satisfy f] is a parser that succeeds if it encounters a character [c] that satisfies the predicate [f c] and returns [c]. *)

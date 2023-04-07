@@ -2,6 +2,19 @@ open Base
 
 type 'a t = Loc.t -> ('a * Loc.t, Parser_err.t) Result.t
 
+include Monad.Make (struct
+  type nonrec 'a t = 'a t
+
+  let return a loc = Ok (a, loc)
+
+  let bind p ~f loc =
+    let open Result.Let_syntax in
+    let%bind a, loc' = p loc in
+    f a loc'
+
+  let map = `Define_using_bind
+end)
+
 (* atomic operations *)
 let str s loc =
   let remain = Loc.remain loc in
@@ -11,12 +24,6 @@ let str s loc =
     let msg = Printf.sprintf "Tried to match %s, but got %s" s remain in
     Error (Parser_err.from msg loc)
 
-let bind p ~f loc =
-  let open Result.Let_syntax in
-  let%bind a, loc' = p loc in
-  f a loc'
-
-let return a loc = Ok (a, loc)
 let fail msg loc = Error (Parser_err.from msg loc)
 
 let slice p loc =
@@ -45,7 +52,6 @@ let eof loc =
 let rec fix ~f loc = f (fix ~f) loc
 
 (* operators *)
-let ( >>= ) p f = bind p ~f
 let ( let* ) = ( >>= )
 
 let ( <&> ) p1 p2 =
@@ -54,8 +60,6 @@ let ( <&> ) p1 p2 =
   return (r1, r2)
 
 (* derived operations *)
-let map p ~f = bind p ~f:(Fn.compose return f)
-let ( >>| ) p f = map p ~f
 
 let satisfy ~f =
   let* c = any in
