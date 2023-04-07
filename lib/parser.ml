@@ -8,8 +8,7 @@ include Monad.Make (struct
   let return a loc = Ok (a, loc)
 
   let bind p ~f loc =
-    let open Result.Let_syntax in
-    let%bind a, loc' = p loc in
+    let%bind.Result a, loc' = p loc in
     f a loc'
 
   let map = `Define_using_bind
@@ -27,8 +26,8 @@ let str s loc =
 let fail msg loc = Error (Parser_err.from msg loc)
 
 let slice p loc =
-  let open Result.Monad_infix in
-  p loc >>= fun (_, loc') -> return (Loc.slice ~before:loc ~after:loc') loc'
+  let%bind.Result _, loc' = p loc in
+  return (Loc.slice ~before:loc ~after:loc') loc'
 
 let ( <|> ) p1 p2 loc =
   match p1 loc with Error _ -> p2 loc | Ok _ as ret -> ret
