@@ -1,5 +1,7 @@
 # Parscomb
 
+![GitHub CI](https://github.com/Green-Wood/parscomb/actions/workflows/ci.yaml/badge.svg)
+
 Parscomb is a lightweight, monadic parser combinator library for OCaml, created as a toy project to learn and explore monadic programming. It allows you to easily create, modify, and combine parsers for various text formats and languages. The library provides essential atomic operations, operators, and derived operations, as well as several useful parsers for common tasks.
 
 ## Features
