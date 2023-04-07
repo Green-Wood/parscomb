@@ -20,6 +20,15 @@ let%test_unit "bind" =
   in
   str_eq (run parser "helloworld") (Ok "helloworld")
 
+let%test_unit "bind_Let_syntax" =
+  let parser =
+    let open Let_syntax in
+    let%bind s1 = str "hello" in
+    let%bind s2 = str "world" in
+    return (s1 ^ s2)
+  in
+  str_eq (run parser "helloworld") (Ok "helloworld")
+
 let%test_unit "slice" =
   let parser = "hi" |> str |> many |> slice in
   str_eq (run parser "hihihiaa") (Ok "hihihi")
