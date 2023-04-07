@@ -52,11 +52,7 @@ let rec fix ~f loc = f (fix ~f) loc
 
 (* operators *)
 let ( let* ) = ( >>= )
-
-let ( <&> ) p1 p2 =
-  let* r1 = p1 in
-  let* r2 = p2 in
-  return (r1, r2)
+let ( <&> ) = Let_syntax.Let_syntax.both
 
 (* derived operations *)
 
