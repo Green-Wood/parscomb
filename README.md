@@ -14,6 +14,15 @@ Parscomb is a lightweight, monadic parser combinator library for OCaml, created 
 ## Learning Monadic Programming
 Parscomb serves as a practical example of monadic programming, showcasing the power and expressiveness of monads in the context of parser combinators. By studying the source code and examples, you can gain a deeper understanding of monads and how they can be used to model complex control flows and data manipulations in a functional programming language like OCaml.
 
+
+## Install dependencies
+```
+opam switch create parscomb 4.13.1
+eval $(opam env)
+opam install --deps-only .
+dune build
+```
+
 ## Example
 
 ### Arithmetic Calculator
@@ -49,7 +58,7 @@ let rec main_loop () =
 
 let () = main_loop ()
 ```
-You can play with this simple calculator:
+You can play with this simple calculator `./_build/default/bin/main.exe`:
 ```
 >>> 1+2+3
 6
